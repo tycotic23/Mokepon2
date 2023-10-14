@@ -37,6 +37,12 @@ public class Cookie {
         this.health = health;
     }
 
+    public Cookie(String name, String description, int health) {
+        this.name = name;
+        this.description = description;
+        this.health = health;
+    }
+
     public long getId() {
         return id;
     }

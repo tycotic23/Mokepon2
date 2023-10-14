@@ -7,4 +7,7 @@ import java.util.List;
 public interface CookieService {
     List<Cookie> getAllCookies();
     Cookie getCookieById(long id);
+
+    void deleteCookieById(long id);
+    void addCookie(Cookie cookie);
 }

@@ -15,11 +15,21 @@ public class CookieServiceImplement implements CookieService {
 
     @Override
     public List<Cookie> getAllCookies() {
-        return null;
+        return cookieRepository.findAll();
     }
 
     @Override
     public Cookie getCookieById(long id) {
-        return null;
+        return cookieRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public void deleteCookieById(long id) {
+        cookieRepository.deleteById(id);
+    }
+
+    @Override
+    public void addCookie(Cookie cookie) {
+        cookieRepository.save(cookie);
     }
 }
