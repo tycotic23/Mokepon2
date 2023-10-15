@@ -12,8 +12,7 @@ public class CookiePlayer {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native",strategy = "native")
     private long id;
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="player_id")
+    @OneToOne(mappedBy = "monster")
     private Player player;
 
     private String animIdle, animMove;
@@ -32,7 +31,7 @@ public class CookiePlayer {
     public CookiePlayer() {
     }
 
-    public CookiePlayer(Cookie cookie,Player player) {
+    public CookiePlayer(Cookie cookie) {
         this.animIdle= cookie.getAnimIdle();
         this.animMove=cookie.getAnimMove();
         this.animAttacks=cookie.getAnimAttacks();
@@ -40,7 +39,6 @@ public class CookiePlayer {
         this.description=cookie.getDescription();
         this.attacks=cookie.getAttacks();
         this.health= cookie.getHealth();
-        player.setMonster(this);
     }
 
     public long getId() {

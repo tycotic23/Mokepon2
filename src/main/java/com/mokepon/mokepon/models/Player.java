@@ -12,8 +12,8 @@ public class Player {
     private long id;
     private int points=0;
     private String name;
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="monster_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "monster_id", referencedColumnName = "id")
     private CookiePlayer monster;
 
     public Player() {
