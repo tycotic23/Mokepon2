@@ -12,10 +12,10 @@ public class BattleServiceImplement implements BattleService {
     @Autowired
     BattleRepository battleRepository;
     @Override
-    public long createBattleRoom() {
+    public Battle createBattleRoom() {
         Battle battle=new Battle();
         battleRepository.save(battle);
-        return battle.getId();
+        return battle;
     }
 
     @Override

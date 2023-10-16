@@ -53,4 +53,19 @@ public class PlayerServiceImplement implements PlayerService {
     public void addPlayer(Player player) {
         playerRepository.save(player);
     }
+
+    @Override
+    public boolean checkBattleRoomBothPlayers(long idPlayer1, long idPlayer2) {
+        //revisa si dos jugadores estan correctamente en la misma sala
+        //si un jugador no existe o no tiene sala, es porque no estan en la misma y falta crearla
+        Player player1=getPlayerById(idPlayer1);
+        Player player2=getPlayerById(idPlayer2);
+        if(player1==null || player2==null){
+            return false;
+        }
+        if(player1.getBattle()==null || player2.getBattle()==null){
+            return false;
+        }
+        return player1.getBattle().getId()==player2.getBattle().getId();
+    }
 }

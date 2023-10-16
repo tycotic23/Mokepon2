@@ -19,4 +19,6 @@ public interface PlayerService {
 
     void deletePlayerById(long id);
     void addPlayer(Player player);
+
+    boolean checkBattleRoomBothPlayers(long idPlayer1,long idPlayer2);
 }
