@@ -25,6 +25,16 @@ public class PlayerServiceImplement implements PlayerService {
     }
 
     @Override
+    public Player getPlayerByName(String name) {
+        return playerRepository.findByName(name);
+    }
+
+    @Override
+    public PlayerFigthDTO getPlayerFigthDTOByName(String name) {
+        return new PlayerFigthDTO(getPlayerByName(name));
+    }
+
+    @Override
     public List<PlayerFigthDTO> getAllPlayersFigthDTO() {
         return getAllPlayers().stream().map(PlayerFigthDTO::new).collect(Collectors.toList());
     }

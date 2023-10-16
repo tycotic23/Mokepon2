@@ -25,6 +25,11 @@ public class PlayerController {
         return new ResponseEntity<>(playerService.getPlayerFigthDTOById(id),HttpStatus.ACCEPTED);
     }
 
+    @GetMapping("/player/byname")
+    public ResponseEntity<Object> getPlayerByName(@RequestParam String name){
+        return new ResponseEntity<>(playerService.getPlayerFigthDTOByName(name).getMonster(),HttpStatus.ACCEPTED);
+    }
+
 
     @DeleteMapping("/player/{id}")
     public ResponseEntity<Object> DeletePlayerById(@PathVariable long id){

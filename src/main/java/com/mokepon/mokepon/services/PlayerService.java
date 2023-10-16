@@ -10,6 +10,10 @@ public interface PlayerService {
     List<Player> getAllPlayers();
     Player getPlayerById(long id);
 
+    Player getPlayerByName(String name);
+
+    PlayerFigthDTO getPlayerFigthDTOByName(String name);
+
     List<PlayerFigthDTO> getAllPlayersFigthDTO();
     PlayerFigthDTO getPlayerFigthDTOById(long id);
 
