@@ -3,7 +3,9 @@ package com.mokepon.mokepon.models;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -15,6 +17,8 @@ public class Battle {
 
     @OneToMany(mappedBy = "battle",fetch=FetchType.EAGER)
     private Set<Player> fighters= new HashSet<>();
+
+    private int flags=0;
 
     public Battle() {
     }
@@ -31,4 +35,18 @@ public class Battle {
         player.setBattle(this);
         fighters.add(player);
     }
+
+    public int getFlags() {
+        return flags;
+    }
+
+    public void setFlags(int flags) {
+        this.flags = flags;
+    }
+
+    public void addFlag(){
+        flags++;
+    }
+
+
 }

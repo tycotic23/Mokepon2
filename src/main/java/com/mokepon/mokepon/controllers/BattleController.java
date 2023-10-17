@@ -1,6 +1,7 @@
 package com.mokepon.mokepon.controllers;
 
 import com.mokepon.mokepon.dtos.PlayerFigthDTO;
+import com.mokepon.mokepon.models.AttackElement;
 import com.mokepon.mokepon.models.Battle;
 import com.mokepon.mokepon.models.Player;
 import com.mokepon.mokepon.services.implement.BattleServiceImplement;
@@ -21,7 +22,7 @@ public class BattleController {
     private PlayerServiceImplement playerService;
 
     @Transactional
-    @GetMapping("/player/{id}/addtobattle/{id_enemy}")
+    @PostMapping("/player/{id}/addtobattle/{id_enemy}")
     public ResponseEntity<Object> createBattleRoom(@PathVariable long id, @PathVariable long id_enemy){
         //el jugador no puede ser el mismo
         if(id==id_enemy){
@@ -56,7 +57,7 @@ public class BattleController {
 
     @Transactional
     @DeleteMapping("/battle/{id}")
-    public ResponseEntity<Object> createBattleRoom(@PathVariable long id){
+    public ResponseEntity<Object> deleteBattleRoom(@PathVariable long id){
         if(!battleService.existsById(id)){
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         }
@@ -68,6 +69,31 @@ public class BattleController {
         //borrar el battle room
         battleService.destroyBattleRoom(id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/player/{id}/sendAttack/{attack}")
+    public ResponseEntity<Object> sendAttack(@PathVariable long id, @PathVariable AttackElement attackElement){
+        //cada ataque de un jugador levanta una bandera (flags)
+        //el ataque se va a resolver cuando se levanten las dos banderas
+        Battle battle=playerService.getPlayerById(id).getBattle();
+        battle.addFlag();
+        //almacenar ataque del jugador
+        //guardar en la bdd
+        battleService.updateBattleRoom(battle);
+        return new ResponseEntity<>(battle.getFlags(),HttpStatus.ACCEPTED);
+
+    }
+
+    @Transactional
+    @PostMapping("/player/{id}/resolveAttack")
+    public ResponseEntity<Object> resolveAttack(@PathVariable long id){
+        //se llama a este evento cuando un player obtuvo 2 banderas como rta
+        Battle battle=playerService.getPlayerById(id).getBattle();
+        //resetear las banderas
+        battle.setFlags(0);
+        battleService.updateBattleRoom(battle);
+        //comparar ataques
+
     }
 
 }

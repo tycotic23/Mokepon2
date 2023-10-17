@@ -39,4 +39,16 @@ public class BattleServiceImplement implements BattleService {
     public Battle getBattleRoomById(long id) {
         return battleRepository.findById(id).orElse(null);
     }
+
+    @Override
+    public void updateBattleRoom(Battle battle) {
+        battleRepository.save(battle);
+    }
+
+    /*@Override
+    public long countFlagsInBattle(Battle battle) {
+        //Battle battle=getBattleRoomById(id);
+        //return battle.getFlags().stream().filter(flag->flag).count();
+        return
+    }*/
 }

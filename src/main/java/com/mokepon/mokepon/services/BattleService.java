@@ -12,4 +12,8 @@ public interface BattleService {
     boolean existsById(long id);
 
     Battle getBattleRoomById(long id);
+
+    //long countFlagsInBattle(Battle battle);
+
+    void updateBattleRoom(Battle battle);
 }
