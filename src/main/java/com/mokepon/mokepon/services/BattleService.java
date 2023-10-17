@@ -8,4 +8,8 @@ public interface BattleService {
     void addPlayer(long id, Player player);
 
     void destroyBattleRoom(long id);
+
+    boolean existsById(long id);
+
+    Battle getBattleRoomById(long id);
 }

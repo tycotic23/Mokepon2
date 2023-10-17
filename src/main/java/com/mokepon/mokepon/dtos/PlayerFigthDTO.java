@@ -16,7 +16,7 @@ public class PlayerFigthDTO {
         this.id = player.getId();
         this.points = player.getPoints();
         this.name = player.getName();
-        this.monster = new CookieFigthDTO(player.getMonster());
+        this.monster = (player.getMonster()==null)? null:new CookieFigthDTO(player.getMonster());
     }
 
     public long getId() {

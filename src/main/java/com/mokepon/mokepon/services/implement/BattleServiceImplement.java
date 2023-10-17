@@ -29,4 +29,14 @@ public class BattleServiceImplement implements BattleService {
     public void destroyBattleRoom(long id) {
         battleRepository.deleteById(id);
     }
+
+    @Override
+    public boolean existsById(long id) {
+        return battleRepository.existsById(id);
+    }
+
+    @Override
+    public Battle getBattleRoomById(long id) {
+        return battleRepository.findById(id).orElse(null);
+    }
 }

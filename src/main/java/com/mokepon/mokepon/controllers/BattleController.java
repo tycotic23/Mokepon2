@@ -8,10 +8,8 @@ import com.mokepon.mokepon.services.implement.PlayerServiceImplement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/server")
@@ -22,8 +20,13 @@ public class BattleController {
     @Autowired
     private PlayerServiceImplement playerService;
 
+    @Transactional
     @GetMapping("/player/{id}/addtobattle/{id_enemy}")
     public ResponseEntity<Object> createBattleRoom(@PathVariable long id, @PathVariable long id_enemy){
+        //el jugador no puede ser el mismo
+        if(id==id_enemy){
+            return new ResponseEntity<>("You can't fight with you",HttpStatus.FORBIDDEN);
+        }
         //revisar si existen los jugadores
         Player player1=playerService.getPlayerById(id);
         Player player2=playerService.getPlayerById(id_enemy);
@@ -33,6 +36,7 @@ public class BattleController {
         if(player2==null){
             return new ResponseEntity<>("enemy not found",HttpStatus.FORBIDDEN);
         }
+
         //revisa si existe una battleroom con esos dos id, en caso de no existir la crea
         if(playerService.checkBattleRoomBothPlayers(id,id_enemy)){
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
@@ -49,4 +53,21 @@ public class BattleController {
         //return new ResponseEntity<>(cookieService.getAllCookies(), HttpStatus.ACCEPTED);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
+
+    @Transactional
+    @DeleteMapping("/battle/{id}")
+    public ResponseEntity<Object> createBattleRoom(@PathVariable long id){
+        if(!battleService.existsById(id)){
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        }
+        Battle battle=battleService.getBattleRoomById(id);
+        //quitarlo de ambos jugadores
+        for(Player p: battle.getFighters()){
+            p.setBattle(null);
+        }
+        //borrar el battle room
+        battleService.destroyBattleRoom(id);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
 }
