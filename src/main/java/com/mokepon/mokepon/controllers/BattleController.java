@@ -21,6 +21,11 @@ public class BattleController {
     @Autowired
     private PlayerServiceImplement playerService;
 
+
+    /*
+    * Crear la sala para la batalla entre dos jugadores. el primero en entrar la crea, generando una conexion
+    * unica entre ambos. Cuando un jugador entra revisa que no exista la misma conexion
+    * */
     @Transactional
     @PostMapping("/player/{id}/addtobattle/{id_enemy}")
     public ResponseEntity<Object> createBattleRoom(@PathVariable long id, @PathVariable long id_enemy){
@@ -45,7 +50,6 @@ public class BattleController {
         //crear battleroom
         Battle battle= battleService.createBattleRoom();
         //y a ambos jugadores le añade esa battle
-        //battleService.addPlayer(,);
         battle.addFighter(player1);
         battle.addFighter(player2);
         //guardar los jugadores con la nueva informacion
@@ -55,6 +59,9 @@ public class BattleController {
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
+    /*
+    * borrar una sala de batalla y quitar a los jugadores de la conexion
+    * */
     @Transactional
     @DeleteMapping("/battle/{id}")
     public ResponseEntity<Object> deleteBattleRoom(@PathVariable long id){
@@ -71,29 +78,41 @@ public class BattleController {
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("/player/{id}/sendAttack/{attack}")
-    public ResponseEntity<Object> sendAttack(@PathVariable long id, @PathVariable AttackElement attackElement){
-        //cada ataque de un jugador levanta una bandera (flags)
-        //el ataque se va a resolver cuando se levanten las dos banderas
-        Battle battle=playerService.getPlayerById(id).getBattle();
-        battle.addFlag();
-        //almacenar ataque del jugador
-        //guardar en la bdd
-        battleService.updateBattleRoom(battle);
-        return new ResponseEntity<>(battle.getFlags(),HttpStatus.ACCEPTED);
+    /*
+    * enviar un ataque del jugador a su sala de batalla. por lo general se da al tocar
+    * uno de los botones de ataque
+    * */
+
+    @Transactional
+    @PostMapping("/player/{idPlayer}/sendAttack/{attack}")
+    public ResponseEntity<Object> sendAttack(@PathVariable long idPlayer, @PathVariable AttackElement attackElement){
+        //revisar que el jugador este en una batalla valida con otro jugador
+        //obtener la battle del jugador
+        //crear un attackplayer y enlazarlo al jugador
+        //revisar si en la battle ya existe un ataque de ese jugador, si es asi, eliminar el anterior
+        //agregar a la lista de ataques de la battle
+        //devolver un booleano: false si no hay otros ataques, true si ya se puede resolver
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
 
     }
+
+    /*
+    * se dispara por lo general cuando se dan las dos banderas de ataque
+    * */
 
     @Transactional
     @PostMapping("/player/{id}/resolveAttack")
     public ResponseEntity<Object> resolveAttack(@PathVariable long id){
-        //se llama a este evento cuando un player obtuvo 2 banderas como rta
-        Battle battle=playerService.getPlayerById(id).getBattle();
-        //resetear las banderas
+        //revisar que el jugador este en una batalla valida con otro jugador
+        //obtener la battle del jugador
+       //si aun no fue resuelto se resuelve y se envia la respuesta, se almacena para el siguiente jugador
+        //si ya fue resuelto, entregar la respuesta almacenada y borrarla
+        /*Battle battle=playerService.getPlayerById(id).getBattle();
+        //resetear la lista de ataques
         battle.setFlags(0);
         battleService.updateBattleRoom(battle);
-        //comparar ataques
-
+        //comparar ataques*/
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
 }

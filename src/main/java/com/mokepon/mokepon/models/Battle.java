@@ -18,7 +18,10 @@ public class Battle {
     @OneToMany(mappedBy = "battle",fetch=FetchType.EAGER)
     private Set<Player> fighters= new HashSet<>();
 
-    private int flags=0;
+    @OneToMany(mappedBy = "battle",fetch=FetchType.EAGER)
+    private Set<AttackPlayer> attacks= new HashSet<>();
+
+    //private int flags=0;
 
     public Battle() {
     }
@@ -31,12 +34,29 @@ public class Battle {
         return fighters;
     }
 
+    public Set<AttackPlayer> getAttacks() {
+        return attacks;
+    }
+
+    public void addAttacks(AttackPlayer attack) {
+        attack.setBattle(this);
+        attacks.add(attack);
+    }
+
+    public void resetAttacks() {
+        attacks.clear();
+    }
+
     public void addFighter(Player player){
         player.setBattle(this);
         fighters.add(player);
     }
 
-    public int getFlags() {
+    public int getAttackFlags() {
+        return attacks.size();
+    }
+
+    /*public int getFlags() {
         return flags;
     }
 
@@ -46,7 +66,7 @@ public class Battle {
 
     public void addFlag(){
         flags++;
-    }
+    }*/
 
 
 }

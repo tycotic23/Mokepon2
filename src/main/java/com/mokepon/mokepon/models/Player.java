@@ -16,6 +16,10 @@ public class Player {
     @JoinColumn(name = "monster_id", referencedColumnName = "id")
     private CookiePlayer monster;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "attack_id", referencedColumnName = "id")
+    private AttackPlayer attack;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "battle_id")
     private Battle battle;
@@ -50,6 +54,15 @@ public class Player {
     public void setMonster(CookiePlayer monster) {
         monster.setPlayer(this);
         this.monster = monster;
+    }
+
+    public AttackPlayer getAttack() {
+        return attack;
+    }
+
+    public void setAttack(AttackPlayer attack) {
+        attack.setPlayer(this);
+        this.attack = attack;
     }
 
     public Battle getBattle() {
