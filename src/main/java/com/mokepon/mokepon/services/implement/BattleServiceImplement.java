@@ -1,5 +1,6 @@
 package com.mokepon.mokepon.services.implement;
 
+import com.mokepon.mokepon.models.AttackPlayer;
 import com.mokepon.mokepon.models.Battle;
 import com.mokepon.mokepon.models.Player;
 import com.mokepon.mokepon.repositories.BattleRepository;
@@ -27,7 +28,20 @@ public class BattleServiceImplement implements BattleService {
 
     @Override
     public void destroyBattleRoom(long id) {
-        battleRepository.deleteById(id);
+        destroyBattleRoom(getBattleRoomById(id));
+    }
+
+    @Override
+    public void destroyBattleRoom(Battle battle) {
+        //antes de eliminarlo desvincularlo de los jugadores
+        //quitarlo de ambos jugadores
+        for(Player p: battle.getFighters()){
+            if(p!=null) {
+                p.setBattle(null);
+            }
+        }
+        //borrar el battle room
+        battleRepository.deleteById(battle.getId());
     }
 
     @Override
@@ -45,10 +59,18 @@ public class BattleServiceImplement implements BattleService {
         battleRepository.save(battle);
     }
 
+    @Override
+    public boolean wasPlayerAttacked(Player player) {
+        return player.getBattle().getAttacks().contains(player.getAttack());
+    }
+
+    @Override
+    public void deletePlayerAttack(Player player) {
+        player.getBattle().getAttacks().remove(player.getAttack());
+    }
+
     /*@Override
-    public long countFlagsInBattle(Battle battle) {
-        //Battle battle=getBattleRoomById(id);
-        //return battle.getFlags().stream().filter(flag->flag).count();
-        return
+    public void sendAttack(AttackPlayer attackPlayer, Battle battle) {
+        battle.addAttacks(attackPlayer);
     }*/
 }

@@ -68,4 +68,9 @@ public class PlayerServiceImplement implements PlayerService {
         }
         return player1.getBattle().getId()==player2.getBattle().getId();
     }
+
+    @Override
+    public boolean existsById(long id) {
+        return playerRepository.existsById(id);
+    }
 }

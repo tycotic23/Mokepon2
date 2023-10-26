@@ -2,6 +2,7 @@ package com.mokepon.mokepon.controllers;
 
 import com.mokepon.mokepon.dtos.PlayerFigthDTO;
 import com.mokepon.mokepon.models.AttackElement;
+import com.mokepon.mokepon.models.AttackPlayer;
 import com.mokepon.mokepon.models.Battle;
 import com.mokepon.mokepon.models.Player;
 import com.mokepon.mokepon.services.implement.BattleServiceImplement;
@@ -47,6 +48,13 @@ public class BattleController {
         if(playerService.checkBattleRoomBothPlayers(id,id_enemy)){
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         }
+        //limpiar battlerooms anteriores (si quedaron)
+        if(player1.getBattle()!=null){
+            battleService.destroyBattleRoom(player1.getBattle());
+        }
+        if(player2.getBattle()!=null){
+            battleService.destroyBattleRoom(player2.getBattle());
+        }
         //crear battleroom
         Battle battle= battleService.createBattleRoom();
         //y a ambos jugadores le añade esa battle
@@ -55,7 +63,6 @@ public class BattleController {
         //guardar los jugadores con la nueva informacion
         playerService.addPlayer(player1);
         playerService.addPlayer(player2);
-        //return new ResponseEntity<>(cookieService.getAllCookies(), HttpStatus.ACCEPTED);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
@@ -68,12 +75,6 @@ public class BattleController {
         if(!battleService.existsById(id)){
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         }
-        Battle battle=battleService.getBattleRoomById(id);
-        //quitarlo de ambos jugadores
-        for(Player p: battle.getFighters()){
-            p.setBattle(null);
-        }
-        //borrar el battle room
         battleService.destroyBattleRoom(id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
@@ -86,13 +87,26 @@ public class BattleController {
     @Transactional
     @PostMapping("/player/{idPlayer}/sendAttack/{attack}")
     public ResponseEntity<Object> sendAttack(@PathVariable long idPlayer, @PathVariable AttackElement attackElement){
+        //el jugador debe existir
+        if(!playerService.existsById(idPlayer)){
+            return new ResponseEntity<>("Player not found",HttpStatus.FORBIDDEN);
+        }
+        Player player =playerService.getPlayerById(idPlayer);
         //revisar que el jugador este en una batalla valida con otro jugador
-        //obtener la battle del jugador
-        //crear un attackplayer y enlazarlo al jugador
-        //revisar si en la battle ya existe un ataque de ese jugador, si es asi, eliminar el anterior
-        //agregar a la lista de ataques de la battle
+        if(player.getBattle()==null){
+            return new ResponseEntity<>("You must to be in a battle room first",HttpStatus.FORBIDDEN);
+        }
+        //revisar si ya existia un ataque de ese jugador en la battleroom (estan relacionados por el AttackPlayer)
+        if(battleService.wasPlayerAttacked(player)){
+            battleService.deletePlayerAttack(player);
+        }
+        //crear un attackplayer y enlazarlo al jugador y a la battleroom
+        AttackPlayer attackPlayer=new AttackPlayer(attackElement,1);
+        player.setAttack(attackPlayer);
+        player.getBattle().addAttacks(attackPlayer);
         //devolver un booleano: false si no hay otros ataques, true si ya se puede resolver
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        boolean resuelve=player.getBattle().getAttacks().size()>=2;
+        return new ResponseEntity<>(resuelve,HttpStatus.ACCEPTED);
 
     }
 
