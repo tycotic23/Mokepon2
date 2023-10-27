@@ -22,6 +22,8 @@ public class BattleController {
     @Autowired
     private PlayerServiceImplement playerService;
 
+   
+
 
     /*
     * Crear la sala para la batalla entre dos jugadores. el primero en entrar la crea, generando una conexion
@@ -86,7 +88,7 @@ public class BattleController {
 
     @Transactional
     @PostMapping("/player/{idPlayer}/sendAttack/{attack}")
-    public ResponseEntity<Object> sendAttack(@PathVariable long idPlayer, @PathVariable AttackElement attackElement){
+    public ResponseEntity<Object> sendAttack(@PathVariable long idPlayer, @PathVariable AttackElement attack){
         //el jugador debe existir
         if(!playerService.existsById(idPlayer)){
             return new ResponseEntity<>("Player not found",HttpStatus.FORBIDDEN);
@@ -101,12 +103,24 @@ public class BattleController {
             battleService.deletePlayerAttack(player);
         }
         //crear un attackplayer y enlazarlo al jugador y a la battleroom
-        AttackPlayer attackPlayer=new AttackPlayer(attackElement,1);
+        AttackPlayer attackPlayer=new AttackPlayer(attack,1);
         player.setAttack(attackPlayer);
         player.getBattle().addAttacks(attackPlayer);
         //devolver un booleano: false si no hay otros ataques, true si ya se puede resolver
         boolean resuelve=player.getBattle().getAttacks().size()>=2;
         return new ResponseEntity<>(resuelve,HttpStatus.ACCEPTED);
+
+    }
+
+    //de prueba
+    @PostMapping("/player/{idPlayer}/testAttack/{attack}")
+    public ResponseEntity<Object> testAttack(@PathVariable long idPlayer, @PathVariable AttackElement attack){
+        Player player =playerService.getPlayerById(idPlayer);
+        //revisar si ya existia un ataque de ese jugador en la battleroom (estan relacionados por el AttackPlayer)
+       /* if(battleService.wasPlayerAttacked(player)){
+            battleService.deletePlayerAttack(player);
+        }*/
+        return new ResponseEntity<>(battleService.wasPlayerAttacked(player),HttpStatus.ACCEPTED);
 
     }
 

@@ -21,7 +21,7 @@ public class CookiePlayerController {
     @Autowired
     private PlayerServiceImplement playerService;
 
-    //conseguir monstro del jugador
+    //conseguir monstruo del jugador
     @GetMapping("/player/{name}/cookie")
     public ResponseEntity<Object> getCookiePlayer(@PathVariable String name){
         if(!cookiePlayerService.existsByPlayer_name(name)){
