@@ -12,12 +12,10 @@ public class Player {
     private long id;
     private int points=0;
     private String name;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "monster_id", referencedColumnName = "id")
-    private CookiePlayer monster;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "attack_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "player")
+    private CookiePlayer monster;
+    @OneToOne(mappedBy = "player")
     private AttackPlayer attack;
 
     @ManyToOne(fetch = FetchType.EAGER)

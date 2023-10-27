@@ -64,10 +64,11 @@ public class BattleServiceImplement implements BattleService {
         return player.getBattle().getAttacks().contains(player.getAttack());
     }
 
-    @Override
+    /*@Override
     public void deletePlayerAttack(Player player) {
+
         player.getBattle().getAttacks().remove(player.getAttack());
-    }
+    }*/
 
     /*@Override
     public void sendAttack(AttackPlayer attackPlayer, Battle battle) {

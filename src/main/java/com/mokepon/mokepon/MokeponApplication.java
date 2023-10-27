@@ -31,24 +31,31 @@ public class MokeponApplication {
 			cookieRepository.save(cookieChispas);
 
 			Player playerMain= new Player("stevan");
+			Player playerEnemy= new Player("Susan");
+			Player player3= new Player("jean");
+
+
 			CookiePlayer oreostevan=new CookiePlayer(cookieOreo);
 			playerMain.setMonster(oreostevan);
 
-			Player playerEnemy= new Player("Susan");
+
 			CookiePlayer pepaSusan=new CookiePlayer(cookiePepa);
 			playerEnemy.setMonster(pepaSusan);
 
-			Player player3= new Player("jean");
+
 			CookiePlayer monster3=new CookiePlayer(cookieOreo);
 			player3.setMonster(monster3);
 
-			playerRepository.save(playerEnemy);
-			playerRepository.save(playerMain);
-			playerRepository.save(player3);
 
-			cookiePlayerRepository.save(oreostevan);
+
+
 			cookiePlayerRepository.save(pepaSusan);
 			cookiePlayerRepository.save(monster3);
+			cookiePlayerRepository.save(oreostevan);
+			playerRepository.save(playerMain);
+			playerRepository.save(playerEnemy);
+
+			playerRepository.save(player3);
 
 
 

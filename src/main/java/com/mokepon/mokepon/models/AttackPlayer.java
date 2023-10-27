@@ -11,7 +11,10 @@ public class AttackPlayer {
     @GenericGenerator(name = "native",strategy = "native")
     private long id;
 
-    @OneToOne(mappedBy = "attack")
+    /*@OneToOne(mappedBy = "attack")
+    private Player player;*/
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "player_id", referencedColumnName = "id")
     private Player player;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "battle_id")

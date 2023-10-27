@@ -12,7 +12,9 @@ public class CookiePlayer {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native",strategy = "native")
     private long id;
-    @OneToOne(mappedBy = "monster")
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "player_id", referencedColumnName = "id")
     private Player player;
 
     private String animIdle, animMove;

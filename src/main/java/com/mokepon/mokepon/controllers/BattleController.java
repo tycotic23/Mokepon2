@@ -5,6 +5,7 @@ import com.mokepon.mokepon.models.AttackElement;
 import com.mokepon.mokepon.models.AttackPlayer;
 import com.mokepon.mokepon.models.Battle;
 import com.mokepon.mokepon.models.Player;
+import com.mokepon.mokepon.services.implement.AttackPlayerServiceImplement;
 import com.mokepon.mokepon.services.implement.BattleServiceImplement;
 import com.mokepon.mokepon.services.implement.PlayerServiceImplement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,8 @@ public class BattleController {
     @Autowired
     private PlayerServiceImplement playerService;
 
-   
+   @Autowired
+   private AttackPlayerServiceImplement attackPlayerService;
 
 
     /*
@@ -99,28 +101,45 @@ public class BattleController {
             return new ResponseEntity<>("You must to be in a battle room first",HttpStatus.FORBIDDEN);
         }
         //revisar si ya existia un ataque de ese jugador en la battleroom (estan relacionados por el AttackPlayer)
+        boolean resuelve=false;
         if(battleService.wasPlayerAttacked(player)){
-            battleService.deletePlayerAttack(player);
+            attackPlayerService.deleteAttackPlayerById(player.getAttack().getId());
+            //si ya habia atacado habia una bandera preexistente
+            resuelve=player.getBattle().getAttacks().size()>=2;
+        }
+        else{
+            //si el jugador no habia atacado y no estaba vacio entonces ya es la 2da bandera de ataque
+            resuelve=!player.getBattle().getAttacks().isEmpty();
         }
         //crear un attackplayer y enlazarlo al jugador y a la battleroom
         AttackPlayer attackPlayer=new AttackPlayer(attack,1);
         player.setAttack(attackPlayer);
         player.getBattle().addAttacks(attackPlayer);
+        //guardar attackplayer en bdd
+        attackPlayerService.addAttackPlayer(attackPlayer);
         //devolver un booleano: false si no hay otros ataques, true si ya se puede resolver
-        boolean resuelve=player.getBattle().getAttacks().size()>=2;
         return new ResponseEntity<>(resuelve,HttpStatus.ACCEPTED);
 
+    }
+
+    /*
+    * conseguir la cantidad de banderas de ataque
+    * */
+    @GetMapping("/battle/{idBattle}/flags")
+    public ResponseEntity<Object> getBattleFlags(@PathVariable long idBattle){
+        //revisar si existe la battle room
+        if(!battleService.existsById(idBattle)){
+            return new ResponseEntity<>("Battle Room not found",HttpStatus.FORBIDDEN);
+        }
+        //conseguir las banderas de ataque
+        return new ResponseEntity<>(battleService.getBattleRoomById(idBattle).getAttacks().size(),HttpStatus.ACCEPTED);
     }
 
     //de prueba
     @PostMapping("/player/{idPlayer}/testAttack/{attack}")
     public ResponseEntity<Object> testAttack(@PathVariable long idPlayer, @PathVariable AttackElement attack){
         Player player =playerService.getPlayerById(idPlayer);
-        //revisar si ya existia un ataque de ese jugador en la battleroom (estan relacionados por el AttackPlayer)
-       /* if(battleService.wasPlayerAttacked(player)){
-            battleService.deletePlayerAttack(player);
-        }*/
-        return new ResponseEntity<>(battleService.wasPlayerAttacked(player),HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(player.getBattle().getAttacks().size(),HttpStatus.ACCEPTED);
 
     }
 
