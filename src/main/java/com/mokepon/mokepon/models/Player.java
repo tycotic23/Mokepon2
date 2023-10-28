@@ -12,9 +12,15 @@ public class Player {
     private long id;
     private int points=0;
     private String name;
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="monster_id")
+
+    @OneToOne(mappedBy = "player")
     private CookiePlayer monster;
+    @OneToOne(mappedBy = "player")
+    private AttackPlayer attack;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "battle_id")
+    private Battle battle;
 
     public Player() {
     }
@@ -46,5 +52,22 @@ public class Player {
     public void setMonster(CookiePlayer monster) {
         monster.setPlayer(this);
         this.monster = monster;
+    }
+
+    public AttackPlayer getAttack() {
+        return attack;
+    }
+
+    public void setAttack(AttackPlayer attack) {
+        attack.setPlayer(this);
+        this.attack = attack;
+    }
+
+    public Battle getBattle() {
+        return battle;
+    }
+
+    public void setBattle(Battle battle) {
+        this.battle = battle;
     }
 }

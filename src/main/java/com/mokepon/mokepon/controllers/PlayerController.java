@@ -1,6 +1,7 @@
 package com.mokepon.mokepon.controllers;
 
 import com.mokepon.mokepon.models.Player;
+import com.mokepon.mokepon.services.implement.CookiePlayerServiceImplement;
 import com.mokepon.mokepon.services.implement.PlayerServiceImplement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,13 +17,19 @@ public class PlayerController {
 
     @GetMapping("/player")
     public ResponseEntity<Object> getAllPlayers(){
-        return new ResponseEntity<>(playerService.getAllPlayers(), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(playerService.getAllPlayersFigthDTO(), HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/player/{id}")
     public ResponseEntity<Object> getPlayerById(@PathVariable long id){
-        return new ResponseEntity<>(playerService.getPlayerById(id),HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(playerService.getPlayerFigthDTOById(id),HttpStatus.ACCEPTED);
     }
+
+    @GetMapping("/player/byname")
+    public ResponseEntity<Object> getPlayerByName(@RequestParam String name){
+        return new ResponseEntity<>(playerService.getPlayerFigthDTOByName(name).getMonster(),HttpStatus.ACCEPTED);
+    }
+
 
     @DeleteMapping("/player/{id}")
     public ResponseEntity<Object> DeletePlayerById(@PathVariable long id){
@@ -35,6 +42,8 @@ public class PlayerController {
         playerService.addPlayer(player);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
+
+
 
     //modificar puntos del jugador segun su id (/player?points=34)
 
