@@ -102,4 +102,8 @@ public class CookiePlayer {
     public void setPlayer(Player player) {
         this.player = player;
     }
+
+    public void applyDamage(int damage){
+        this.health-=damage;
+    }
 }

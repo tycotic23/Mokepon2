@@ -22,8 +22,6 @@ public class Player {
     @JoinColumn(name = "battle_id")
     private Battle battle;
 
-    private float health=100;
-
     public Player() {
     }
 
@@ -73,15 +71,7 @@ public class Player {
         this.battle = battle;
     }
 
-    public float getHealth() {
-        return health;
-    }
-
-    public void setHealth(float health) {
-        this.health = health;
-    }
-
-    public void applyDamage(float damage){
-        this.health-=damage;
+    public void applyDamage(int damage){
+        this.monster.applyDamage(damage);
     }
 }

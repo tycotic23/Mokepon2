@@ -45,10 +45,6 @@ public class Battle {
         attacks.add(attack);
     }
 
-    /*public void resetAttacks() {
-        attacks.clear();
-    }*/
-
     public void addFighter(Player player){
         player.setBattle(this);
         fighters.add(player);
@@ -68,5 +64,9 @@ public class Battle {
 
     public void addFightResult(Long fightResult){
         this.fightsResults.add(fightResult);
+    }
+
+    public int getRoundNumber(){
+        return this.fightsResults.size()+1;
     }
 }

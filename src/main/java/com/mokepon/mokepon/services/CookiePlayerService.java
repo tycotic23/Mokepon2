@@ -14,6 +14,8 @@ public interface CookiePlayerService {
     void deleteCookieById(long id);
     void addCookie(CookiePlayer cookie);
 
+    void updateCookiePlayer(CookiePlayer cookie);
+
     CookieFigthDTO getCookieFigthDTOFromPlayerByName(String name);
 
     boolean existsByPlayer_name(String name);

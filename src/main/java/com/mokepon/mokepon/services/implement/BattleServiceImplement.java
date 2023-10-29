@@ -1,5 +1,6 @@
 package com.mokepon.mokepon.services.implement;
 
+import com.mokepon.mokepon.dtos.BattleDTO;
 import com.mokepon.mokepon.models.AttackPlayer;
 import com.mokepon.mokepon.models.Battle;
 import com.mokepon.mokepon.models.Player;
@@ -52,6 +53,11 @@ public class BattleServiceImplement implements BattleService {
     @Override
     public Battle getBattleRoomById(long id) {
         return battleRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public BattleDTO getBattleRoomDTOById(long id) {
+        return new BattleDTO(getBattleRoomById(id));
     }
 
     @Override

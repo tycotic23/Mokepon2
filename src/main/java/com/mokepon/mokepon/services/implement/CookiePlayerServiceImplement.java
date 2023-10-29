@@ -36,6 +36,11 @@ public class CookiePlayerServiceImplement implements CookiePlayerService {
     }
 
     @Override
+    public void updateCookiePlayer(CookiePlayer cookie) {
+        addCookie(cookie);
+    }
+
+    @Override
     public CookieFigthDTO getCookieFigthDTOFromPlayerByName(String name) {
         return new CookieFigthDTO(cookiePlayerRepository.findByPlayer_name(name));
     }

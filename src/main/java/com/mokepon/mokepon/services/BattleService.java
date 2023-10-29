@@ -1,5 +1,6 @@
 package com.mokepon.mokepon.services;
 
+import com.mokepon.mokepon.dtos.BattleDTO;
 import com.mokepon.mokepon.models.AttackPlayer;
 import com.mokepon.mokepon.models.Battle;
 import com.mokepon.mokepon.models.Player;
@@ -14,6 +15,7 @@ public interface BattleService {
     boolean existsById(long id);
 
     Battle getBattleRoomById(long id);
+    BattleDTO getBattleRoomDTOById(long id);
 
     void updateBattleRoom(Battle battle);
 

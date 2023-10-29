@@ -1,12 +1,10 @@
 package com.mokepon.mokepon.controllers;
 
 import com.mokepon.mokepon.dtos.PlayerFigthDTO;
-import com.mokepon.mokepon.models.AttackElement;
-import com.mokepon.mokepon.models.AttackPlayer;
-import com.mokepon.mokepon.models.Battle;
-import com.mokepon.mokepon.models.Player;
+import com.mokepon.mokepon.models.*;
 import com.mokepon.mokepon.services.implement.AttackPlayerServiceImplement;
 import com.mokepon.mokepon.services.implement.BattleServiceImplement;
+import com.mokepon.mokepon.services.implement.CookiePlayerServiceImplement;
 import com.mokepon.mokepon.services.implement.PlayerServiceImplement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +23,18 @@ public class BattleController {
 
    @Autowired
    private AttackPlayerServiceImplement attackPlayerService;
+
+   @Autowired
+   private CookiePlayerServiceImplement cookiePlayerService;
+
+   /*
+   * Devolver un objeto BattleDTO con toda la info necesaria para actualizar las pantallas
+   * durante la batalla entre dos jugadores
+   * */
+    @GetMapping("/battle/{id}")
+    public ResponseEntity<Object> getBattleDTO(@PathVariable long id){
+        return new ResponseEntity<>(battleService.getBattleRoomDTOById(id),HttpStatus.ACCEPTED);
+    }
 
 
     /*
@@ -67,7 +77,7 @@ public class BattleController {
         //guardar los jugadores con la nueva informacion
         playerService.addPlayer(player1);
         playerService.addPlayer(player2);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     /*
@@ -80,6 +90,38 @@ public class BattleController {
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         }
         battleService.destroyBattleRoom(id);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    /*
+     * desconectar jugador. Si no quedan otos jugadores entonces borrar la sala
+     * */
+    @Transactional
+    @PostMapping("/player/{idPlayer}/disconnectBattle")
+    public ResponseEntity<Object> disconnectPlayerFromBattleRoom(@PathVariable long idPlayer){
+        //revisar que exista el jugador
+        if(!playerService.existsById(idPlayer))
+        {
+            return new ResponseEntity<>("Player not found",HttpStatus.FORBIDDEN);
+        }
+        Player player=playerService.getPlayerById(idPlayer);
+        //debe estar conectado a una batalla
+        if(player.getBattle()==null){
+            return new ResponseEntity<>("Player must be in a battle room first",HttpStatus.FORBIDDEN);
+        }
+        Battle battle=player.getBattle();
+        //revisar si hay otros jugadores
+        int fighters=battle.getFighters().size();
+
+        //si era el unico jugador borrar la sala
+        if(fighters<=1){
+            battleService.destroyBattleRoom(battle);
+        }else{
+            //quitar jugador de la batalla
+            player.setBattle(null);
+        }
+        //guardar modificacion del player
+        playerService.addPlayer(player);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
@@ -121,9 +163,11 @@ public class BattleController {
         //resolver (si es posible)
         if(resuelve){
             Battle battleUpdated=battleService.initFightSimulation(player.getBattle());
+            //actualizar los monstruos de los  jugadores en la bdd
             //actualizar players en la base de datos
             for(Player fighter:battleUpdated.getFighters()){
-                playerService.updatePlayer(fighter);
+                cookiePlayerService.updateCookiePlayer(fighter.getMonster());
+                //playerService.updatePlayer(fighter);
             }
             //resetear ataques
             //battleUpdated.resetAttacks();
@@ -147,10 +191,23 @@ public class BattleController {
     }
 
     /*
+     * conseguir el numero de ronda de ataques
+     * */
+    @GetMapping("/battle/{idBattle}/round")
+    public ResponseEntity<Object> getBattleRound(@PathVariable long idBattle){
+        //revisar si existe la battle room
+        if(!battleService.existsById(idBattle)){
+            return new ResponseEntity<>("Battle Room not found",HttpStatus.FORBIDDEN);
+        }
+        //conseguir el número de ronda, comienza en la 1 (sin ataques resueltos)
+        return new ResponseEntity<>(battleService.getBattleRoomById(idBattle).getRoundNumber(),HttpStatus.ACCEPTED);
+    }
+
+    /*
     * Le da la respuesta de la batalla al 2do jugador y luego resetea los ataques
     * */
 
-    @Transactional
+    /*@Transactional
     @PostMapping("/player/{id}/getFightSolution")
     public ResponseEntity<Object> getFightSolution(@PathVariable long id){
         //revisar que el jugador exista
@@ -163,13 +220,13 @@ public class BattleController {
         //devolver el ultimo elemento agregado a la lista de ataques resueltos de la battleRoom
         int rounds=player.getBattle().getFightsResults().size();
         return new ResponseEntity<>(player.getBattle().getFightsResults().get(rounds-1),HttpStatus.ACCEPTED);
-    }
+    }*/
 
     /*
     * se dispara por lo general cuando se dan las dos banderas de ataque
     * */
 
-    @Transactional
+    /*@Transactional
     @PostMapping("/player/{id}/resolveAttack")
     public ResponseEntity<Object> resolveAttack(@PathVariable long id){
         //revisar que el jugador este en una batalla valida con otro jugador
@@ -180,8 +237,8 @@ public class BattleController {
         //resetear la lista de ataques
         battle.setFlags(0);
         battleService.updateBattleRoom(battle);
-        //comparar ataques*/
+        //comparar ataques
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
-    }
+    }*/
 
 }
