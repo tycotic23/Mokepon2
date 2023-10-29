@@ -66,4 +66,8 @@ public class AttackPlayer {
     public void setPlayer(Player player) {
         this.player = player;
     }
+
+    public boolean winTo(AttackPlayer attackPlayer){
+        return this.element.winTo(attackPlayer.getElement());
+    }
 }

@@ -19,7 +19,7 @@ public interface BattleService {
 
     boolean wasPlayerAttacked(Player player);
 
-    //void deletePlayerAttack(Player player);
+    void addFightResult(Battle battle, long playerWinner, int lostHealth);
 
-    //void sendAttack(AttackPlayer attackPlayer, Battle battle);
+    Battle initFightSimulation(Battle battle);
 }

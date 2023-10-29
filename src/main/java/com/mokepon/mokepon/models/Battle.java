@@ -21,7 +21,9 @@ public class Battle {
     @OneToMany(mappedBy = "battle",fetch=FetchType.EAGER)
     private Set<AttackPlayer> attacks= new HashSet<>();
 
-    //private int flags=0;
+    @ElementCollection
+    @Column(name="rondas")
+    private List<Long> fightsResults=new ArrayList<>();
 
     public Battle() {
     }
@@ -56,17 +58,15 @@ public class Battle {
         return attacks.size();
     }
 
-    /*public int getFlags() {
-        return flags;
+    public List<Long> getFightsResults() {
+        return this.fightsResults;
     }
 
-    public void setFlags(int flags) {
-        this.flags = flags;
+    public void setFightsResults(ArrayList<Long> fightsResults) {
+        this.fightsResults = fightsResults;
     }
 
-    public void addFlag(){
-        flags++;
-    }*/
-
-
+    public void addFightResult(Long fightResult){
+        this.fightsResults.add(fightResult);
+    }
 }

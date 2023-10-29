@@ -23,4 +23,6 @@ public interface PlayerService {
     boolean checkBattleRoomBothPlayers(long idPlayer1,long idPlayer2);
 
     boolean existsById(long id);
+
+    void updatePlayer(Player player);
 }

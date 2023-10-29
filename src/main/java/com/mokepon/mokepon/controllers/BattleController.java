@@ -118,6 +118,14 @@ public class BattleController {
         //guardar attackplayer en bdd
         attackPlayerService.addAttackPlayer(attackPlayer);
         //devolver un booleano: false si no hay otros ataques, true si ya se puede resolver
+        //resolver (si es posible)
+        if(resuelve){
+            Battle battleUpdated=battleService.initFightSimulation(player.getBattle());
+            //actualizar players en la base de datos
+            for(Player fighter:battleUpdated.getFighters()){
+                playerService.updatePlayer(fighter);
+            }
+        }
         return new ResponseEntity<>(resuelve,HttpStatus.ACCEPTED);
 
     }
@@ -135,12 +143,23 @@ public class BattleController {
         return new ResponseEntity<>(battleService.getBattleRoomById(idBattle).getAttacks().size(),HttpStatus.ACCEPTED);
     }
 
-    //de prueba
-    @PostMapping("/player/{idPlayer}/testAttack/{attack}")
-    public ResponseEntity<Object> testAttack(@PathVariable long idPlayer, @PathVariable AttackElement attack){
-        Player player =playerService.getPlayerById(idPlayer);
-        return new ResponseEntity<>(player.getBattle().getAttacks().size(),HttpStatus.ACCEPTED);
+    /*
+    * Le da la respuesta de la batalla al 2do jugador y luego resetea los ataques
+    * */
 
+    @Transactional
+    @PostMapping("/player/{id}/getFightSolution")
+    public ResponseEntity<Object> getFightSolution(@PathVariable long id){
+        //revisar que el jugador exista
+        if(!playerService.existsById(id)){
+            return new ResponseEntity<>("Player not found",HttpStatus.FORBIDDEN);
+        }
+        Player player =playerService.getPlayerById(id);
+        //revisar que este en una batalla valida con otro jugador
+        //revisar que exista la lista de resultados de la batalla y que no sea vacia
+        //devolver el ultimo elemento agregado a la lista de ataques resueltos de la battleRoom
+        int rounds=player.getBattle().getFightsResults().size();
+        return new ResponseEntity<>(player.getBattle().getFightsResults().get(rounds-1),HttpStatus.ACCEPTED);
     }
 
     /*

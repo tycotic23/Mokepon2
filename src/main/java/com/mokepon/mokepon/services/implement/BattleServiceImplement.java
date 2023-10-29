@@ -64,14 +64,31 @@ public class BattleServiceImplement implements BattleService {
         return player.getBattle().getAttacks().contains(player.getAttack());
     }
 
-    /*@Override
-    public void deletePlayerAttack(Player player) {
+    @Override
+    public void addFightResult(Battle battle, long playerWinner, int lostHealth) {
+        battle.addFightResult(playerWinner);
+    }
 
-        player.getBattle().getAttacks().remove(player.getAttack());
-    }*/
-
-    /*@Override
-    public void sendAttack(AttackPlayer attackPlayer, Battle battle) {
-        battle.addAttacks(attackPlayer);
-    }*/
+    @Override
+    public Battle initFightSimulation(Battle battle) {
+        //obtengo los jugadores
+        Player player1=(Player)battle.getFighters().toArray()[0];
+        Player player2=(Player)battle.getFighters().toArray()[1];
+        long winner=-1;
+        long loser=-1;
+        //obtengo el jugador que pierde vida (si lo hay)
+        if(player1.getAttack().winTo(player2.getAttack())){
+            loser= player2.getId();
+            player2.applyDamage(10);
+        }else if(player2.getAttack().winTo(player1.getAttack())){
+            loser= player1.getId();
+            player1.applyDamage(10);
+        }
+        //sumo el ganador a la lista
+        addFightResult(battle,loser,-10);
+        //reseteo los ataques
+        //battle.resetAttacks();
+        //devuelve el jugador que perdio
+        return battle;
+    }
 }

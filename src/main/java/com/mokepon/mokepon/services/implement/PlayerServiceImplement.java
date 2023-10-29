@@ -73,4 +73,9 @@ public class PlayerServiceImplement implements PlayerService {
     public boolean existsById(long id) {
         return playerRepository.existsById(id);
     }
+
+    @Override
+    public void updatePlayer(Player player) {
+        playerRepository.save(player);
+    }
 }
