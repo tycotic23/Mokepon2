@@ -86,8 +86,6 @@ public class BattleServiceImplement implements BattleService {
         }
         //sumo el ganador a la lista
         addFightResult(battle,loser,-10);
-        //reseteo los ataques
-        //battle.resetAttacks();
         //devuelve el jugador que perdio
         return battle;
     }

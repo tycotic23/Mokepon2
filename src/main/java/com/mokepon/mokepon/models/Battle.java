@@ -45,9 +45,9 @@ public class Battle {
         attacks.add(attack);
     }
 
-    public void resetAttacks() {
+    /*public void resetAttacks() {
         attacks.clear();
-    }
+    }*/
 
     public void addFighter(Player player){
         player.setBattle(this);

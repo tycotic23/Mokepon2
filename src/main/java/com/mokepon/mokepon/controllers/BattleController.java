@@ -125,6 +125,9 @@ public class BattleController {
             for(Player fighter:battleUpdated.getFighters()){
                 playerService.updatePlayer(fighter);
             }
+            //resetear ataques
+            //battleUpdated.resetAttacks();
+            attackPlayerService.resetAttackList(battleUpdated);
         }
         return new ResponseEntity<>(resuelve,HttpStatus.ACCEPTED);
 

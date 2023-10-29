@@ -1,6 +1,7 @@
 package com.mokepon.mokepon.services.implement;
 
 import com.mokepon.mokepon.models.AttackPlayer;
+import com.mokepon.mokepon.models.Battle;
 import com.mokepon.mokepon.repositories.AttackPlayerRepository;
 import com.mokepon.mokepon.services.AttackPlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +32,12 @@ public class AttackPlayerServiceImplement implements AttackPlayerService {
     @Override
     public void addAttackPlayer(AttackPlayer attackPlayer) {
         attackPlayerRepository.save(attackPlayer);
+    }
+
+    @Override
+    public void resetAttackList(Battle battle) {
+        for(AttackPlayer attack: battle.getAttacks()){
+            deleteAttackPlayerById(attack.getId());
+        }
     }
 }
